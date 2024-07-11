@@ -24,6 +24,6 @@ public class PlayerController : MonoBehaviour
         // Moves the vehicle forward based on vertical input
         transform.Translate(Vector3.forward * Time.deltaTime * speed * forwardInput);
         // Rotates the vehicle forward based on vertical input
-        transform.Rotate(turnSpeed * horizontalInput * Time.deltaTime);
+        transform.Rotate(new Vector3(0, turnSpeed * horizontalInput * Time.deltaTime, 0));
     }
 }
