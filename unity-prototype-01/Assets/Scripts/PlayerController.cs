@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     private float forwardInput;
     private Rigidbody playerRb;
 
+    [SerializeField] List<WheelCollider> allWheels;
+    [SerializeField] int wheelsOnGround;
     void Start(){
         playerRb = GetComponent<Rigidbody>();
         playerRb.centerOfMass = centerOfMass.transform.position;
@@ -27,17 +29,36 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         forwardInput = Input.GetAxis("Vertical");
 
-        playerRb.AddRelativeForce(Vector3.forward * horsePower * forwardInput);
+        if (IsOnGround())
+        {
+            playerRb.AddRelativeForce(Vector3.forward * horsePower * forwardInput);
 
-        // Moves the vehicle forward based on vertical input
-        // transform.Translate(Vector3.forward * Time.deltaTime * speed * forwardInput);
-        // Rotates the vehicle forward based on vertical input
-        transform.Rotate(new Vector3(0, turnSpeed * horizontalInput * Time.deltaTime, 0));
+            transform.Rotate(new Vector3(0, turnSpeed * horizontalInput * Time.deltaTime, 0));
 
-        speed = Mathf.Round(playerRb.velocity.magnitude * 3.6F);
-        speedometerText.SetText("Speed: " + speed + "Km/h");
+            speed = Mathf.Round(playerRb.velocity.magnitude * 3.6F);
+            speedometerText.SetText("Speed: " + speed + "Km/h");
 
-        rpm = Mathf.Round((speed % 30) * 40);
-        rpmText.SetText("RPM: " + rpm);
+            rpm = Mathf.Round((speed % 30) * 40);
+            rpmText.SetText("RPM: " + rpm);
+        }
+    }
+
+    bool IsOnGround()
+    {
+        wheelsOnGround = 0;
+        foreach (WheelCollider wheel in allWheels)
+        {
+            if (wheel.isGrounded)
+            {
+                wheelsOnGround++;
+            }
+        }
+        if (wheelsOnGround == 4)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
     }
 }
